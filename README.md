@@ -1,6 +1,6 @@
-# Traefik Hub MCP gateway
+# Traefik Hub MCP gateway test
 
-
+The purpose of this guide is to deploy a mcp server in a local k8s cluster and OKE to test MCP gateway:
 
 ## Local cluster
 
@@ -8,11 +8,11 @@ How to deploy Traefik Hub and all the dependencies to test MCP gateway in a loca
 
 1. Install k3s
    
-   ```shell
+```shell
    curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="--disable traefik" sh -
    ```
 2. Get a licencse key from preview environments and install the latest version of Traefik Hub
-
+  
 ```shell
 helm repo add --force-update traefik https://traefik.github.io/charts
 
@@ -25,21 +25,31 @@ helm upgrade --install --namespace traefik traefik traefik/traefik \
   --set hub.platformUrl=https://api-preview.hub.traefik.io/agent --set image.registry=europe-west9-docker.pkg.dev/traefiklabs --set image.repository=traefik-hub/traefik-hub --set image.tag=latest-v3 --set image.pullPolicy=Always
   ```
 
-3. Deploy a local mcp server:
+3. Deploy a local [mcp server](https://github.com/Fernando-Benegas/mcp/blob/main/k8s/mcp-server.yaml):
 
 ```shell
-
+kubectl apply -f https://raw.githubusercontent.com/Fernando-Benegas/mcp/refs/heads/main/k8s/mcp-server.yaml
 ```   
 
-### Prerequisites
-
-- Install OCI dependencies:
-
+4. Test the mcp server using two terminals:
+   
+   - Terminal 1
+     
 ```shell
-sudo apt update
-sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
-sudo apt update && sudo apt install python3 python3-pip python3-venv
+   curl -N http://localhost/mcp?stream=messages
+```
+   - Terminal 2
+     
+```shell
+curl -X POST -H "Content-Type: application/json" -d '{"user":"k8s-tester","text":"Hello again!"}'  http://localhost/mcp
 ```
 
-- Install ``OCI-CLI``:  [Install oci-cli in linux](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#InstallingCLI__linux_and_unix)
+   Expected output in terminal 1:
+
+```
+id: 0
+data: {"text":"Hello again!","user":"k8s-tester"}
+event: message
+```
+
 
