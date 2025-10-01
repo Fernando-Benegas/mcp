@@ -32,13 +32,13 @@ kubectl apply -f https://raw.githubusercontent.com/Fernando-Benegas/mcp/refs/hea
 ```   
 
 4. Test the mcp server using two terminals:
-   
-   - Terminal 1
+ 
+  - Terminal 1
      
 ```shell
    curl -N http://localhost/mcp?stream=messages
 ```
-   - Terminal 2
+  - Terminal 2
      
 ```shell
 curl -X POST -H "Content-Type: application/json" -d '{"user":"k8s-tester","text":"Hello again!"}'  http://localhost/mcp
