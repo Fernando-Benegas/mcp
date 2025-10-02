@@ -3,7 +3,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: cors
-  namespace: extmcp  
+  namespace: extmcp
 spec:
   headers:
     accessControlAllowCredentials: true
@@ -30,19 +30,13 @@ metadata:
 spec:
   plugin:
     mcp:
-      resource_metadata:
-        #In MCP only header is available for bearer_methods_supported
-        resource: https://mcp.number-guessing-game.portal.one/mcp
-        authorization_servers:
-          - https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/auth
-        scopes_supported:
-          - profile
-          - email
-        # resource_documentation: https://resource.example.com/resource_documentation.html
-      validation:
-        jwt:
-          jwksUrl: https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/certs
-          forwardAuthorization: true
+      # resource_metadata:
+      #   resource: https://extmcp.oke.mageekbox.eu
+      #   authorization_servers:
+      #     - https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/auth
+      #   scopes_supported:
+      #     - default
+      #   resource_documentation: https://portal.one/docs
       policies:
         - match: Equals(`mcp.method`, `tools/call`) && Equals(`mcp.params.name`, `start_game`)
           action: allow

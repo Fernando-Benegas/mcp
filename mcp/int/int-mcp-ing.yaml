@@ -1,0 +1,20 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mcp-ingressroute
+  namespace: intmcp
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`intmcp.${CLUSTERNAME}.${DOMAINNAME}`)
+      kind: Rule
+      services:
+        - name: mcp-server-service
+          port: 8080
+      middlewares:
+        # - name: cors
+        - name: mcp
+  tls:
+    certResolver: le

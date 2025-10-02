@@ -1,0 +1,45 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: cors
+  namespace: intmcp
+spec:
+  headers:
+    accessControlAllowCredentials: true
+    accessControlAllowMethods:
+      - GET
+      - HEAD
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - CONNECT
+      - OPTIONS
+    accessControlAllowOriginList:
+      - "*"
+    accessControlMaxAge: 0
+    accessControlAllowHeaders: 
+      - "*"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: mcp
+  namespace: intmcp
+spec:
+  plugin:
+    mcp:
+      resource_metadata:
+        resource: https://intmcp.oke.mageekbox.eu/mcp
+        authorization_servers:
+          - https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/auth
+        scopes_supported:
+          - default
+        resource_documentation: https://intmcp.oke.mageekbox.eu/docs
+      # policies:
+      #   - match: Equals(`mcp.method`, `tools/call`) && Equals(`mcp.params.name`, `start_game`)
+      #     action: allow
+      #   - match: Equals(`mcp.method`, `tools/call`) && Prefix(`mcp.params.name`, `guess_number`)
+      #     action: allow
+      defaultAction: allow
