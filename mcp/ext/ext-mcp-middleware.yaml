@@ -1,0 +1,51 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: cors
+  namespace: extmcp  
+spec:
+  headers:
+    accessControlAllowCredentials: true
+    accessControlAllowMethods:
+      - GET
+      - HEAD
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - CONNECT
+      - OPTIONS
+    accessControlAllowOriginList:
+      - "*"
+    accessControlMaxAge: 0
+    accessControlAllowHeaders: 
+      - "*"
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: mcp
+  namespace: extmcp
+spec:
+  plugin:
+    mcp:
+      resource_metadata:
+        #In MCP only header is available for bearer_methods_supported
+        resource: https://mcp.number-guessing-game.portal.one/mcp
+        authorization_servers:
+          - https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/auth
+        scopes_supported:
+          - profile
+          - email
+        # resource_documentation: https://resource.example.com/resource_documentation.html
+      validation:
+        jwt:
+          jwksUrl: https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/certs
+          forwardAuthorization: true
+      policies:
+        - match: Equals(`mcp.method`, `tools/call`) && Equals(`mcp.params.name`, `start_game`)
+          action: allow
+        - match: Equals(`mcp.method`, `tools/call`) && Prefix(`mcp.params.name`, `guess_number`)
+          action: allow
+      defaultAction: deny

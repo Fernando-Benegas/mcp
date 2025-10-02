@@ -1,0 +1,18 @@
+architecture: standalone
+#architecture: replication
+master:
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 128Mi
+      cpu: 100m
+auth:
+  enabled: false
+  sentinel: false
+  password: "totototo"
+persistence:
+  enabled: false
+sentinel:
+  enabled: false

@@ -1,0 +1,20 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mcp-server
+  namespace: extmcp
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`extmcp.${CLUSTERNAME}.${DOMAINNAME}`)
+      middlewares:
+        - name: cors
+        - name: mcp
+      services:
+        - name: external-mcp
+          kind: Service
+          port: 443
+  tls:
+    certResolver: le

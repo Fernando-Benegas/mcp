@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-mcp
+  namespace: extmcp
+spec:
+  type: ExternalName
+  externalName: mcp.number-guessing-game.portal.one
+  ports:
+  - port: 443

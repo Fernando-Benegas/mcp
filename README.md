@@ -68,3 +68,89 @@ TO BE TESTED
 ### Client and Middleware setup
 
 TBC
+
+
+## OKE cluster
+
+### Deploy Redis for distributed features
+
+```bash
+helm upgrade --install redis bitnami/redis --namespace redis --values tools/redis/values.yaml --create-namespace
+```
+
+## Deploy Hub
+
+### Create namespace
+
+```bash
+kubectl create ns traefik
+```
+
+### Create Hub token secret
+
+```bash
+kubectl create secret generic hub-license --from-literal=token="${HUB_TOKEN}" -n traefik
+```
+
+### deploy Traefik
+
+```bash
+helm upgrade --install traefik traefik/traefik --create-namespace --namespace traefik --values hub/hub-values.yaml --devel
+```
+
+### Add Hub dashboard ingress if needed
+
+```bash
+envsubst < hub/dashboard.yaml | kubectl apply -f -
+```
+
+### Deploy observability stack
+
+```bash
+kubectl create ns observability
+```
+
+#### Deploy Otel collector
+
+##### install collector
+
+```bash
+helm upgrade --install otel-collector open-telemetry/opentelemetry-collector -n observability --values tools/observability/otel-collector/values.yaml 
+```
+
+#### Deploy loki
+
+```bash
+helm upgrade --install loki grafana/loki -n observability --values tools/observability/loki/values.yaml
+```
+
+#### Deploy Jaeger
+
+```bash
+kubectl apply -f tools/observability/jaeger
+```
+
+#### Deploy Prometheus stack
+
+```bash
+helm upgrade --install promtail grafana/promtail -n observability --values tools/observability/promtail/values.yaml
+kubectl create configmap grafana-traefik-dashboards --from-file=tools/observability/prometheus-stack/traefik.json -o yaml --dry-run=client -n observability | kubectl apply -f - && kubectl label -n observability cm grafana-traefik-dashboards grafana_dashboard=true
+helm upgrade -i prometheus-stack prometheus-community/kube-prometheus-stack -f tools/observability/prometheus-stack/values.yaml -n observability
+envsubst < tools/observability/prometheus-stack/ingress.yaml | kubectl apply -f -
+```
+
+## deploy external mcp
+
+```bash
+for i in $(find mcp/ext -type f -follow -print); do
+  envsubst < $i | kubectl apply -f -
+done
+```
+
+## deploy internal mcp
+
+```bash
+for i in $(find mcp/int -type f -follow -print); do
+  envsubst < $i | kubectl apply -f -
+done
+```

@@ -1,0 +1,93 @@
+grafana:
+  resources:
+    requests:
+      memory: 384Mi
+      cpu: 200m
+    limits:
+      memory: 384Mi
+      cpu: 200m
+  defaultDashboardsEnabled: false
+  sidecar:
+    datasources:
+      alertmanager:
+        enabled: false
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "true"
+      searchNamespace: observability
+      provider:
+        allowUiUpdates: true
+  additionalDataSources:
+    - name: Loki
+      access: proxy
+      isDefault: false
+      editable: true
+      orgId: 1
+      type: loki
+      url: http://loki:3100
+      version: 1
+    - name: jaeger
+      access: proxy
+      isDefault: false
+      editable: true
+      orgId: 1
+      type: jaeger
+      url: http://simplest-query:16686
+      version: 1
+  adminPassword: traefikhub
+prometheus:
+  global:
+    scrape_interval: 10s
+    scrape_timeout: 10s
+    evaluation_interval: 10s
+  prometheusSpec:
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 400m
+      limits:
+        memory: 512Mi
+        cpu: 400m
+    additionalArgs:
+      - name: web.enable-otlp-receiver
+        value: ""
+    # additionalScrapeConfigs:
+    #   - job_name: 'traefik'
+    #     kubernetes_sd_configs:
+    #       - role: pod
+    #         namespaces:
+    #           names:
+    #             - traefik
+    #     relabel_configs:
+    #     - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+    #       action: keep
+    #       regex: true
+    #     - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+    #       action: replace
+    #       regex: ([^:]+)(?::\d+)?;(\d+)
+    #       replacement: $1:$2
+    #       target_label: __address__
+    #     - source_labels: [__meta_kubernetes_pod_label_version]
+    #       action: replace
+    #       replacement: $1
+    #       target_label: version
+prometheus-node-exporter:
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 128Mi
+      cpu: 100m
+alertmanager:
+  enabled: false
+prometheusOperator:
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 128Mi
+      cpu: 100m   
+   
