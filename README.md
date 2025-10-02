@@ -67,7 +67,7 @@ TO BE TESTED
 
 ## Client and Middleware setup
 
-As a client, we can use the [MCP inspector](). To do so, it is possibe to run the MCP inspector in a docker container:
+As a client, we can use the [MCP inspector](https://github.com/modelcontextprotocol/inspector). To do so, it is possibe to run the MCP inspector in a docker container:
 
 ```shell
 docker run --rm --network host -p 6274:6274 -p 6277:6277 ghcr.io/modelcontextprotocol/inspector:latest
