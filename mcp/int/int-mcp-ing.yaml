@@ -14,7 +14,7 @@ spec:
         - name: mcp-server-service
           port: 8080
       middlewares:
-        # - name: cors
+        - name: cors
         - name: mcp
   tls:
     certResolver: le

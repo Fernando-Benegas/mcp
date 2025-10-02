@@ -30,13 +30,13 @@ metadata:
 spec:
   plugin:
     mcp:
-      resource_metadata:
-        resource: https://intmcp.oke.mageekbox.eu/mcp
-        authorization_servers:
+      resourceMetadata:
+        resource: https://intmcp.oke.mageekbox.eu
+        authorizationServers:
           - https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/auth
-        scopes_supported:
+        scopesSupported:
           - default
-        resource_documentation: https://intmcp.oke.mageekbox.eu/docs
+        resourceDocumentation: https://intmcp.oke.mageekbox.eu/docs
       # policies:
       #   - match: Equals(`mcp.method`, `tools/call`) && Equals(`mcp.params.name`, `start_game`)
       #     action: allow

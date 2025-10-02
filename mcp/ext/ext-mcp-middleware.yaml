@@ -30,13 +30,6 @@ metadata:
 spec:
   plugin:
     mcp:
-      # resource_metadata:
-      #   resource: https://extmcp.oke.mageekbox.eu
-      #   authorization_servers:
-      #     - https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/auth
-      #   scopes_supported:
-      #     - default
-      #   resource_documentation: https://portal.one/docs
       policies:
         - match: Equals(`mcp.method`, `tools/call`) && Equals(`mcp.params.name`, `start_game`)
           action: allow

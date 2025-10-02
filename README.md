@@ -154,3 +154,9 @@ for i in $(find mcp/int -type f -follow -print); do
   envsubst < $i | kubectl apply -f -
 done
 ```
+
+## build mcp server
+
+```bash
+docker buildx build -t newa/simple-mcp-server:v1.0. --platform linux/amd64 -f mcp/docker/dockerfile . --push
+```
