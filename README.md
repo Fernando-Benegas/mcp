@@ -52,4 +52,19 @@ data: {"text":"Hello again!","user":"k8s-tester"}
 event: message
 ```
 
+### Using an external MCP server
 
+In this example, we will use Notion MCP
+
+1. Deploy the externalService and [ingressroute](https://github.com/Fernando-Benegas/mcp/blob/main/k8s/external-mcp.yaml):
+
+```shell
+kubectl apply -f https://raw.githubusercontent.com/Fernando-Benegas/mcp/blob/main/k8s/external-mcp.yaml
+```
+
+
+TO BE TESTED
+
+### Client and Middleware setup
+
+TBC
