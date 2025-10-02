@@ -21,6 +21,17 @@ spec:
     accessControlMaxAge: 0
     accessControlAllowHeaders: 
       - "*"
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: jwt
+  namespace: intmcp
+spec:
+  plugin:
+    jwt:
+      jwksUrl: https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/certs
+      forwardAuthorization: true
+      wwwAuthenticate: https://intmcp.${CLUSTERNAME}.${DOMAINNAME}/.well-known/oauth-protected-resource
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -33,9 +44,11 @@ spec:
       resourceMetadata:
         resource: https://intmcp.oke.mageekbox.eu
         authorizationServers:
-          - https://lemur-3.cloud-iam.com/auth/realms/localdemo/protocol/openid-connect/auth
+          - https://lemur-3.cloud-iam.com/auth/realms/localdemo
         scopesSupported:
-          - default
+          - openid
+          - profile
+          - email
         resourceDocumentation: https://intmcp.oke.mageekbox.eu/docs
       # policies:
       #   - match: Equals(`mcp.method`, `tools/call`) && Equals(`mcp.params.name`, `start_game`)
