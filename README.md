@@ -54,7 +54,7 @@ event: message
 
 ### Using an external MCP server
 
-In this example, we will use Notion MCP
+In this example, 
 
 1. Deploy the externalService and [ingressroute](https://github.com/Fernando-Benegas/mcp/blob/main/k8s/external-mcp.yaml):
 
@@ -65,6 +65,28 @@ kubectl apply -f https://raw.githubusercontent.com/Fernando-Benegas/mcp/blob/mai
 
 TO BE TESTED
 
-### Client and Middleware setup
+## Client and Middleware setup
 
-TBC
+As a client, we can use the [MCP inspector](). To do so, it is possibe to run the MCP inspector in a docker container:
+
+```shell
+docker run --rm --network host -p 6274:6274 -p 6277:6277 ghcr.io/modelcontextprotocol/inspector:latest
+```
+
+Expected output:
+
+```
+> @modelcontextprotocol/inspector@0.17.0 start
+> node client/bin/start.js
+Starting MCP inspector...
+⚙️ Proxy server listening on localhost:6277
+🔑 Session token: a17853c60d1904639697ac54f807d377df81829859f1966478b32e15fa6e12f0
+   Use this token to authenticate requests or set DANGEROUSLY_OMIT_AUTH=true to disable auth
+🚀 MCP Inspector is up and running at:
+   http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=...
+🌐 Opening browser...
+New StreamableHttp connection request
+Query parameters: {"url":"http://fernando-traefik-test.duckdns.org/mcp?stream=messages","transportType":"streamable-http"}
+Created StreamableHttp client transport
+Client <-> Proxy  sessionId: ...
+```
