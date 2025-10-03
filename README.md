@@ -54,16 +54,7 @@ event: message
 
 ### Using an external MCP server
 
-In this example, 
-
-1. Deploy the externalService and [ingressroute](https://github.com/Fernando-Benegas/mcp/blob/main/k8s/external-mcp.yaml):
-
-```shell
-kubectl apply -f https://raw.githubusercontent.com/Fernando-Benegas/mcp/blob/main/k8s/external-mcp.yaml
-```
-
-
-TO BE TESTED
+TBD
 
 ## Client and Middleware setup
 
@@ -89,4 +80,44 @@ New StreamableHttp connection request
 Query parameters: {"url":"http://fernando-traefik-test.duckdns.org/mcp?stream=messages","transportType":"streamable-http"}
 Created StreamableHttp client transport
 Client <-> Proxy  sessionId: ...
+```
+
+Create the middleware:
+
+```shell
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: mcp
+  namespace: fernando
+spec:
+  plugin:
+    mcp:
+      defaultAction: allow
+      resourceMetadata:
+#        authorizationServers:
+#        - http://lemur-3.cloud-iam.com/auth/realms/localdemo
+        resource: http://fernando-traefik-test.duckdns.org
+#        resourceDocumentation: https://fernando-traefik-test.duckdns.org/docs
+#        scopesSupported:
+#        - openid
+#        - profile
+#        - email
+      validation:
+        jwt:
+#          clientConfig: ...
+#          signingSecret: xxx
+#          signingSecretBase64Encoded: true
+#          publicKey: xxx
+#          jwksFile: xxx
+#          jwksUrl: xxx
+#          ForwardHeaders: true
+#          usernameClaim: xxx
+#          forwardAuthorization: true
+      policies:
+        - match: Equals(`mcp.method`, `tools/call`) && Equals(`mcp.params.name`, `get_weather`) && Contains(`jwt.groups`, `developer`)
+          action: deny
+        - match: Equals(`mcp.method`, `tools/call`) && Prefix(`mcp.params.name`, `read_`)
+          action: allow
+
 ```
